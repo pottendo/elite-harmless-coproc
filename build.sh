@@ -6,7 +6,8 @@
 #===============================================================================
 
 # stop further processing on any error
-set -e
+#set -e
+#set -x
 
 cl65="cl65 \
     --debug-info \
@@ -160,16 +161,15 @@ echo "[OK]"
 # verify that the packed data is correct:
 # (this will be harder to debug once encrypted)
 echo -n "-   verify 'gma4_data1.bin'         "
-if [[
-    # note that this hash was produced by dumping $4000...$758F,
-    # just after decryption (but before relocation)
-    $(md5sum -b < build/gma4_data1.bin) \
- == "049a1004768ed1de4e220923ea865f78 *-"
-]]; then
-    echo "[OK]"
-else
-    echo "FAIL"
-    exit 1
+# note that this hash was produced by dumping $4000...$758F,
+# just after decryption (but before relocation)
+if test \
+    $(md5sum -b < build/gma4_data1.bin | cut -f 1 -d ' ') \
+ = "049a1004768ed1de4e220923ea865f78" ; then \
+    echo "[OK]"; \
+else \
+    echo "FAIL"; \
+    exit 1; \
 fi
 
 # run the binary through the encrypt script, which will spit out an assembler
@@ -184,16 +184,15 @@ echo "[OK]"
 # verify that the packed data is correct:
 # (this will be harder to debug once encrypted)
 echo -n "-   verify 'gma4_data2.bin'         "
-if [[
-    # note that this hash was produced by dumping $75E4...$865F,
-    # just after decryption (but before relocation)
-    $(md5sum -b < build/gma4_data2.bin) \
- == "32cba4aa5d3ee363c0bdfb77e95c1fc3 *-"
-]]; then
-    echo "[OK]"
-else
-    echo "FAIL"
-    exit 1
+# note that this hash was produced by dumping $75E4...$865F,
+# just after decryption (but before relocation)
+if test \
+    $(md5sum -b < build/gma4_data2.bin | cut -f 1 -d ' ') \
+ = "32cba4aa5d3ee363c0bdfb77e95c1fc3" ; then \
+    echo "[OK]"; \
+else \
+    echo "FAIL"; \
+    exit 1; \
 fi
 
 # encrypt the second block
