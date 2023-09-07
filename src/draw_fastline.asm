@@ -48,6 +48,20 @@ _ab49:
         .byte   %11000000
         .byte   %11000000
 
+;_coproc := $04d0
+_coproc := $e0
+
+        .byte   00     ;// sync byte
+        .byte   00     ;// cmd
+        .byte   00     ;// color
+        .byte   00     ;// X1
+        .byte   00     ;// Y1
+        .byte   00     ;// X2
+        .byte   00     ;// Y2
+        nop
+        nop
+        nop
+        nop
 draw_line:
 ;===============================================================================
 ; in:   ZP_VAR_XX15_0           start X-Pos of line in viewport, in px
@@ -81,6 +95,48 @@ draw_line:
 ;       the list of lines to draw, rather than every time a line is drawn
 ;
 ;-------------------------------------------------------------------------------
+        ;jmp @over
+        ; pottendos oc-coproc
+        sty ZP_LINE_RESTORE_Y 
+        lda #0
+        sta _coproc + 4
+        sta _coproc + 7
+        sta _coproc
+
+        lda ZP_VAR_XX15_0
+        sta _coproc + 3
+        lda ZP_VAR_XX15_1
+        sta _coproc + 5
+        lda ZP_VAR_XX15_2
+        sta _coproc + 6
+        lda ZP_VAR_XX15_3
+        sta _coproc + 8
+
+        lda #$41
+        sta _coproc + 2
+        lda #1
+        sta _coproc + 1
+
+@wait4cr:
+        sei
+        inc $01
+        lda $d000
+        lda $d000
+        ;inc VIC_BORDER
+        ;dec VIC_BORDER
+        ;inc VIC_BORDER
+        ;dec VIC_BORDER
+        ;inc VIC_BORDER
+        ;dec VIC_BORDER
+        dec $01
+        cli
+        lda _coproc
+        beq @wait4cr
+
+        ldy ZP_LINE_RESTORE_Y
+        rts
+
+@over:
         ; get abs height of the line:
         ;
         sec 

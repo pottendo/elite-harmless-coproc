@@ -120,8 +120,45 @@ _ab79:  .hibytes _ab71_addrs                                            ;$AB79
 _ab81:  .lobytes _ab81_addrs                                            ;$AB81
 _ab89:  .hibytes _ab81_addrs                                            ;$AB89
 
+_coproc := $fff0
 
 draw_line:                                              ; BBC: LL30     ;$AB91
+        sty ZP_PRESERVE_Y 
+
+        lda #0
+        sta _coproc + 4
+        sta _coproc + 7
+        sta _coproc
+
+        lda ZP_VAR_XX15_0
+        sta _coproc + 3
+        lda ZP_VAR_XX15_1
+        sta _coproc + 5
+        lda ZP_VAR_XX15_2
+        sta _coproc + 6
+        lda ZP_VAR_XX15_3
+        sta _coproc + 8
+        
+        lda #1
+        sta _coproc + 2
+        sta _coproc + 1
+@wait4cr:
+        sei
+        inc $01
+        inc VIC_BORDER
+        dec VIC_BORDER
+        inc VIC_BORDER
+        dec VIC_BORDER
+        inc VIC_BORDER
+        dec VIC_BORDER
+        dec $01
+        cli
+        lda _coproc
+        beq @wait4cr
+
+        ldy ZP_PRESERVE_Y
+        rts
+        
 ;===============================================================================
 ; lines are drawn using a form of Bresenham's Line Algorithm;
 ; <https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm>

@@ -970,6 +970,45 @@ draw_planet_outline:                                    ; BBC: CIRCLE   ;$8044
 ;-------------------------------------------------------------------------------
         jsr check_circle        ; check the circle bounds for visibility
         bcs :-                  ; circle not visible? exit (RTS above us)
+draw_circle:                                            ; BBC: CIRCLE2  ;$805E
+
+        lda #0
+        sta _coproc
+
+        lda ZP_CIRCLE_XPOS_LO
+        sta _coproc + 3
+        lda ZP_CIRCLE_XPOS_LO
+        sta _coproc + 4
+        lda ZP_CIRCLE_YPOS_LO
+        sta _coproc + 5
+        lda ZP_CIRCLE_YPOS_HI
+        sta _coproc + 6
+        lda ZP_CIRCLE_RADIUS
+        sta _coproc + 7
+        lda ZP_CIRCLE_RADIUS + 1
+        sta _coproc + 8
+        
+        ; color
+        lda #$41  
+        sta _coproc + 2
+        ; CCIRCLE_EL == 3
+        lda #3
+        sta _coproc + 1
+
+@wait4cr:
+        sei
+        inc $01
+        inc VIC_BORDER
+        dec VIC_BORDER
+        inc VIC_BORDER
+        dec VIC_BORDER
+        dec $01
+        cli
+        lda _coproc
+        beq @wait4cr
+
+        rts
+;--------------------------------------
 
         lda # $00
         sta circle_lines_x
@@ -993,8 +1032,6 @@ draw_planet_outline:                                    ; BBC: CIRCLE   ;$8044
 
         ; fallthrough
         ; ...
-
-draw_circle:                                            ; BBC: CIRCLE2  ;$805E
 ;===============================================================================
 ; draw a circle:
 ;
