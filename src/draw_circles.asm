@@ -577,6 +577,36 @@ draw_sun:                                               ; BBC: SUN      ;$7F22
 ;       ZP_CIRCLE_YPOS          sun Y-position (16-bits)
 ;       ZP_CIRCLE_RADIUS        radius
 ;-------------------------------------------------------------------------------
+        ;jmp @ov
+        lda #0
+        sta _coproc
+
+        lda ZP_CIRCLE_XPOS_LO
+        sta _coproc + 3
+        lda ZP_CIRCLE_XPOS_HI
+        sta _coproc + 4
+        lda ZP_CIRCLE_YPOS_LO
+        sta _coproc + 5
+        lda ZP_CIRCLE_YPOS_HI
+        sta _coproc + 6
+        lda ZP_CIRCLE_RADIUS
+        sta _coproc + 7
+        lda ZP_CIRCLE_RADIUS + 1
+        sta _coproc + 8
+        
+        ; color
+        lda #$C1  
+        sta _coproc + 2
+        ; CCIRCLE_EL == 3
+        lda #3
+        sta _coproc + 1
+
+        .wait4cr
+
+        rts
+;--------------------------------------
+@ov:
+
         ; TODO: enable the sun buffer?
         ; (value is $FF when buffer is clear)
         lda # $01
