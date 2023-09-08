@@ -559,6 +559,7 @@ ZP_C0                   := $c0  ; stores a mask for < 8px-length lines
 ;                       := $f6  ;UNUSED?
 ;                       := $f7  ;UNUSED?
 ;                       := $f8  ;UNUSED?
+_coproc := $e0
 
 ZP_F9                   := $f9  ;? x1
 

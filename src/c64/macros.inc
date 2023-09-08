@@ -145,3 +145,17 @@ L:
         .byte   $cd
 ;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 .endmacro
+
+.macro .wait4cr
+@w4cr:
+        sei
+        inc $01
+        lda $d000
+        lda $d000
+        inc $d020
+        dec $d020
+        dec $01
+        cli
+        lda _coproc
+        beq @w4cr
+.endmacro

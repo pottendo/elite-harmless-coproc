@@ -48,20 +48,6 @@ _ab49:
         .byte   %11000000
         .byte   %11000000
 
-;_coproc := $04d0
-_coproc := $e0
-
-        .byte   00     ;// sync byte
-        .byte   00     ;// cmd
-        .byte   00     ;// color
-        .byte   00     ;// X1
-        .byte   00     ;// Y1
-        .byte   00     ;// X2
-        .byte   00     ;// Y2
-        nop
-        nop
-        nop
-        nop
 draw_line:
 ;===============================================================================
 ; in:   ZP_VAR_XX15_0           start X-Pos of line in viewport, in px
@@ -117,21 +103,7 @@ draw_line:
         lda #1
         sta _coproc + 1
 
-@wait4cr:
-        sei
-        inc $01
-        lda $d000
-        lda $d000
-        ;inc VIC_BORDER
-        ;dec VIC_BORDER
-        ;inc VIC_BORDER
-        ;dec VIC_BORDER
-        ;inc VIC_BORDER
-        ;dec VIC_BORDER
-        dec $01
-        cli
-        lda _coproc
-        beq @wait4cr
+        .wait4cr
 
         ldy ZP_LINE_RESTORE_Y
         rts

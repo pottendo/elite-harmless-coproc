@@ -956,7 +956,6 @@ _PLF5:                                                  ; BBC: PLF5     ;$7F67
 
 :       rts                                                             ;$8043
 
-
 draw_planet_outline:                                    ; BBC: CIRCLE   ;$8044
 ;===============================================================================
 ; draw a planet's circle:
@@ -971,13 +970,13 @@ draw_planet_outline:                                    ; BBC: CIRCLE   ;$8044
         jsr check_circle        ; check the circle bounds for visibility
         bcs :-                  ; circle not visible? exit (RTS above us)
 draw_circle:                                            ; BBC: CIRCLE2  ;$805E
-
+        ;jmp @ov
         lda #0
         sta _coproc
 
         lda ZP_CIRCLE_XPOS_LO
         sta _coproc + 3
-        lda ZP_CIRCLE_XPOS_LO
+        lda ZP_CIRCLE_XPOS_HI
         sta _coproc + 4
         lda ZP_CIRCLE_YPOS_LO
         sta _coproc + 5
@@ -995,21 +994,11 @@ draw_circle:                                            ; BBC: CIRCLE2  ;$805E
         lda #3
         sta _coproc + 1
 
-@wait4cr:
-        sei
-        inc $01
-        inc VIC_BORDER
-        dec VIC_BORDER
-        inc VIC_BORDER
-        dec VIC_BORDER
-        dec $01
-        cli
-        lda _coproc
-        beq @wait4cr
+        .wait4cr
 
         rts
 ;--------------------------------------
-
+@ov:
         lda # $00
         sta circle_lines_x
 

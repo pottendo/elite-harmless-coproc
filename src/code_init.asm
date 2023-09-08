@@ -254,7 +254,29 @@ init:
         jsr populate_multiply_tables
 
 .endif  ;///////////////////////////////////////////////////////////////////////
+        ; init the oc canvas & viewport
+        ;jmp @ov
+        lda #0
+        sta _coproc+5   ; x1 hi-byte
+        sta _coproc
+        lda #<$4020     ; 4 colums offset to the left
+        sta _coproc+2
+        lda #>$4020
+        sta _coproc+3
+        lda #1          ; viewport (1,1)    
+        sta _coproc+4
+        sta _coproc+6
+        lda #<(320 - 33 - 32)   ; 32 left offset in canvas, 33 == right 32 pixel + 1
+        sta _coproc+7
+        lda #>(320 - 33 - 32)
+        sta _coproc+8
+        lda #144
+        sta _coproc+9
 
+        lda #4 ; cr CCFG
+        sta _coproc+1
+        .wait4cr
+@ov:
         ; turn the screen on:
         ;-----------------------------------------------------------------------
         ; - bit 0-2: horizontal scroll (0)
