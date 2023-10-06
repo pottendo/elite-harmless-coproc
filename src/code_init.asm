@@ -256,6 +256,29 @@ init:
 .endif  ;///////////////////////////////////////////////////////////////////////
         ; init the oc canvas & viewport
         ;jmp @ov
+        ; Orangecart NMI enable
+        
+        sei
+        lda CPU_CONTROL
+        pha
+        and #%11111000
+        ora #%00000101  ; IO_ONLY
+        sta CPU_CONTROL
+
+        lda #< pottendo_nmi
+        sta CPU_VECTOR_NMI+0
+        sta $318
+        lda #> pottendo_nmi
+        sta CPU_VECTOR_NMI+1
+        sta $319
+
+        lda #$01
+        sta $de42       ; enable OC NMI for mailbox
+
+        pla
+        sta CPU_CONTROL
+        cli
+
         lda #0
         sta _coproc+5   ; x1 hi-byte
         sta _coproc
@@ -275,7 +298,10 @@ init:
 
         lda #4 ; cr CCFG
         sta _coproc+1
-        .wait4cr
+        .trigger_wait_oc
+        ;.trigger_oc
+        ;.wait4cr
+
 @ov:
         ; turn the screen on:
         ;-----------------------------------------------------------------------

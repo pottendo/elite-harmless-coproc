@@ -148,14 +148,40 @@ L:
 
 .macro .wait4cr
 @w4cr:
+        lda _coproc
+        bne @out
         sei
         inc $01
-        lda $d000
-        lda $d000
         inc $d020
         dec $d020
         dec $01
         cli
-        lda _coproc
-        beq @w4cr
+        jmp @w4cr
+@out:
+.endmacro
+
+.macro .trigger_oc
+        sei
+        lda CPU_CONTROL
+        pha
+        and #%11111000
+        ora #%00000101  ; IO_ONLY
+        sta CPU_CONTROL
+
+        ;inc $d020
+        lda #$ff
+        sta $e0
+        sta $deff       ; trigger address
+
+        pla
+        sta CPU_CONTROL
+        cli
+.endmacro
+
+.macro .trigger_wait_oc
+        .trigger_oc
+@here:  
+        sta $ef
+        lda $e0
+        bne @here
 .endmacro

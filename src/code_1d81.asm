@@ -142,3 +142,31 @@ docked:                                                                 ;$1D81
 .endif  ;///////////////////////////////////////////////////////////////////////
 
 :       jmp _BAY                                                        ;$1E11
+
+pottendo_nmi:                                                               ;$AB27
+;===============================================================================
+; a Non-Maskable-Interrupt that does nothing; used to disable the
+; RESTORE key and to prevent crashes when the KERNAL ROM is off
+;-------------------------------------------------------------------------------
+
+        pha
+        lda CPU_CONTROL
+        pha
+        and #%11111000
+        ora #%00000101
+        sta CPU_CONTROL
+
+        lda $de40
+        and $de42       ; check if Orangecart mailbox NMI
+        beq @out
+        ;inc $d020
+        lda #$1
+        sta $de40       ; ack NMI
+        lda #0
+        sta $e0
+@out:
+        pla
+        sta CPU_CONTROL
+        pla
+        cli                     ; re-enable interrupts
+        rti                     ; "ReTurn from Interrupt"

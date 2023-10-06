@@ -84,10 +84,11 @@ draw_line:
         ;jmp @over
         ; pottendos oc-coproc
         sty ZP_LINE_RESTORE_Y 
+
         lda #0
         sta _coproc + 4
         sta _coproc + 7
-        sta _coproc
+        ;sta _coproc
 
         lda ZP_VAR_XX15_0
         sta _coproc + 3
@@ -103,8 +104,8 @@ draw_line:
         lda #1
         sta _coproc + 1
 
-        .wait4cr
-
+        .trigger_wait_oc
+        
         ldy ZP_LINE_RESTORE_Y
         rts
 

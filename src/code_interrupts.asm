@@ -433,10 +433,10 @@ init_mem:                                                               ;$AAB2
         ; note that when the KERNAL is switched off, the RAM underneath will
         ; define the NMI interrupt address -- this gets rectified further down
         ;
-        lda #< nmi_null
-        sta KERNAL_VECTOR_NMI+0
-        lda #> nmi_null
-        sta KERNAL_VECTOR_NMI+1
+        ;lda #< nmi_null
+        ;sta KERNAL_VECTOR_NMI+0
+        ;lda #> nmi_null
+        ;sta KERNAL_VECTOR_NMI+1
 
         ; set new `KERNAL_CHROUT` (print character) routine
         ; -- re-route printing to the bitmap screen
@@ -527,10 +527,10 @@ init_mem:                                                               ;$AAB2
         ;       there to prevent crashes when KERNAL ROM is off
 
         ; non-maskable interrupt:
-        lda #< nmi_null
-        sta CPU_VECTOR_NMI+0
-        lda #> nmi_null
-        sta CPU_VECTOR_NMI+1
+        ;lda #< nmi_null
+        ;sta CPU_VECTOR_NMI+0
+        ;lda #> nmi_null
+        ;sta CPU_VECTOR_NMI+1
 
         ; regular interrupt:
         lda #> interrupt
@@ -548,7 +548,6 @@ nmi_null:                                                               ;$AB27
 ;-------------------------------------------------------------------------------
         cli                     ; re-enable interrupts
         rti                     ; "ReTurn from Interrupt"
-
 
 .ifdef  BUILD_ORIGINAL
 ;///////////////////////////////////////////////////////////////////////////////

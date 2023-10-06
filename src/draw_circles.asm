@@ -578,6 +578,8 @@ draw_sun:                                               ; BBC: SUN      ;$7F22
 ;       ZP_CIRCLE_RADIUS        radius
 ;-------------------------------------------------------------------------------
         ;jmp @ov
+        ;.wait4cr
+
         lda #0
         sta _coproc
 
@@ -601,7 +603,7 @@ draw_sun:                                               ; BBC: SUN      ;$7F22
         lda #3
         sta _coproc + 1
 
-        .wait4cr
+        .trigger_oc
 
         rts
 ;--------------------------------------
@@ -1000,9 +1002,11 @@ draw_planet_outline:                                    ; BBC: CIRCLE   ;$8044
         jsr check_circle        ; check the circle bounds for visibility
         bcs :-                  ; circle not visible? exit (RTS above us)
 draw_circle:                                            ; BBC: CIRCLE2  ;$805E
+        
         ;jmp @ov
-        lda #0
-        sta _coproc
+        
+        ;lda #0
+        ;sta _coproc
 
         lda ZP_CIRCLE_XPOS_LO
         sta _coproc + 3
@@ -1024,7 +1028,7 @@ draw_circle:                                            ; BBC: CIRCLE2  ;$805E
         lda #3
         sta _coproc + 1
 
-        .wait4cr
+        .trigger_wait_oc
 
         rts
 ;--------------------------------------
