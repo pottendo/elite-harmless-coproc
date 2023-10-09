@@ -143,7 +143,7 @@ docked:                                                                 ;$1D81
 
 :       jmp _BAY                                                        ;$1E11
 
-pottendo_nmi:                                                               ;$AB27
+pottendo_nmi:                                                               
 ;===============================================================================
 ; a Non-Maskable-Interrupt that does nothing; used to disable the
 ; RESTORE key and to prevent crashes when the KERNAL ROM is off
